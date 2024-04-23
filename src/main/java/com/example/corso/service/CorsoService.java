@@ -29,18 +29,24 @@ public class CorsoService {
 
     public Optional<Corso> update(Corso corso, long id) {
         Optional<Corso> foundCorso = corsoRepository.findById(id);
-        if(foundCorso.isPresent()) {
+        if(foundCorso.isEmpty()) {
+            return Optional.empty();
+        }else {
             foundCorso.get().setNome(corso.getNome());
             foundCorso.get().setDurata(corso.getDurata());
             corsoRepository.save(foundCorso.get());
-            return Optional.of(foundCorso.get());
-        }else {
-            return Optional.empty();
+            return foundCorso;
         }
     }
 
-    public void delete(long id) {
-        corsoRepository.deleteById(id);
+    public Optional<Corso> delete(long id) {
+        Optional<Corso> foundCorso = corsoRepository.findById(id);
+        if(foundCorso.isEmpty()) {
+            return Optional.empty();
+        }else{
+            corsoRepository.deleteById(id);
+            return foundCorso;
+        }
     }
 
     public List<Corso> findByDurata(int durata) {
