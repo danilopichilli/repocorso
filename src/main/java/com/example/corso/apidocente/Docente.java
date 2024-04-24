@@ -1,4 +1,4 @@
-package com.example.corso.entity;
+package com.example.corso.apidocente;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

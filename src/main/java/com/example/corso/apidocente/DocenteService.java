@@ -1,6 +1,5 @@
-package com.example.corso.service;
+package com.example.corso.apidocente;
 
-import com.example.corso.entity.Docente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;

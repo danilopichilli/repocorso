@@ -2,12 +2,11 @@ package com.example.corso.controller;
 
 import com.example.corso.dto.CorsoDTO;
 import com.example.corso.entity.Corso;
-import com.example.corso.entity.Docente;
+import com.example.corso.apidocente.Docente;
 import com.example.corso.service.CorsoService;
-import com.example.corso.service.DocenteService;
+import com.example.corso.apidocente.DocenteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -65,5 +64,6 @@ public class CorsoController {
     public Docente findDocente(@PathVariable long id){
         return docenteService.getDocenteById(id);
     }
+
 
 }
