@@ -21,6 +21,6 @@ public class Corso {
 
     private String durata;
 
-    private int idDocente;
+    private Long idDocente;
 
 }

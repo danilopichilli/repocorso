@@ -23,12 +23,13 @@ public class DocenteService {
     }
 
     public DocenteDTO getDocente(CorsoDTO corsoDTO){
-        String docenteServiceUrl = "http://localhost:8080/docente/findDocente/";
+        String docenteServiceUrl = "http://localhost:8080/docente/findByNomeAndCognome/";
         String url = UriComponentsBuilder.fromHttpUrl(docenteServiceUrl)
                 .path("/{nome}/{cognome}")
                 .buildAndExpand(corsoDTO.getNomeDocente(),corsoDTO.getCognomeDocente())
                 .toUriString();
-        return restTemplate.getForObject(url, DocenteDTO.class);
+        DocenteDTO docenteDTO  = restTemplate.getForObject(url, DocenteDTO.class);
+        return docenteDTO;
     }
 
 }

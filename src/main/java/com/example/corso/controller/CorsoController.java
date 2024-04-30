@@ -21,11 +21,11 @@ public class CorsoController {
     private DocenteService docenteService;
 
     @PostMapping("/salva")
-    public String create(@RequestBody CorsoDTO corso){
-        if(corso.getNomeCorso().isEmpty() || corso.getDurata().isEmpty() || corso.getNomeDocente().isEmpty() || corso.getCognomeDocente().isEmpty()){
+    public String create(@RequestBody CorsoDTO corsoDto){
+        if(corsoDto.getNomeCorso().isEmpty() || corsoDto.getDurata().isEmpty() || corsoDto.getNomeDocente().isEmpty() || corsoDto.getCognomeDocente().isEmpty()){
             return "Non si può salvare vuoto!!";
         }
-        corsoService.create(corso);
+        corsoService.create(corsoDto);
         return "Salvato!";
     }
 

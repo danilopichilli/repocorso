@@ -20,9 +20,6 @@ public class CorsoConverter {
         CorsoDTO corsoDTO = new CorsoDTO();
         corsoDTO.setNomeCorso(corso.getNome());
         corsoDTO.setDurata(corso.getDurata());
-        DocenteDTO docenteDTO = new DocenteDTO();
-        corsoDTO.setNomeDocente(docenteDTO.getNome());
-        corsoDTO.setCognomeDocente(docenteDTO.getCognome());
         return corsoDTO;
     }
 
@@ -40,8 +37,12 @@ public class CorsoConverter {
         return corsoDTOList;
     }
 
-    public Corso convertDtoToEntity(DocenteDTO docenteDTO) {
-        docenteService.getDocente(docenteDTO.getId());
-        return null;
+    public Corso convertDtoToEntity(CorsoDTO corsoDTO) {
+        Corso corso = new Corso();
+        corso.setNome(corsoDTO.getNomeCorso());
+        corso.setDurata(corsoDTO.getDurata());
+        corso.setIdDocente(docenteService.getDocente(corsoDTO).getId());
+        return corso;
     }
+
 }

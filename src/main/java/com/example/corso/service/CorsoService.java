@@ -20,8 +20,7 @@ public class CorsoService {
     private CorsoConverter corsoConverter;
 
     public void create(CorsoDTO corso) {
-        corsoConverter.convertDtoToEntity(corso);
-        corsoRepository.save(corso);
+        corsoRepository.save(corsoConverter.convertDtoToEntity(corso));
     }
 
     public List<Corso> getAllCorsi() {
