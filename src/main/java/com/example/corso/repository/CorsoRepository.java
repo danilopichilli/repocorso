@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface CorsoRepository extends JpaRepository<Corso, Long> {
-    List<Corso> findByDurata(int durata);
+    List<Corso> findByDurata(String durata);
 }

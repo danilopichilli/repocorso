@@ -19,7 +19,8 @@ public class CorsoService {
     @Autowired
     private CorsoConverter corsoConverter;
 
-    public void create(Corso corso) {
+    public void create(CorsoDTO corso) {
+        corsoConverter.convertDtoToEntity(corso);
         corsoRepository.save(corso);
     }
 
@@ -27,7 +28,7 @@ public class CorsoService {
         return corsoRepository.findAll();
     }
 
-    public Optional<Corso> update(Corso corso, long id) {
+    public Optional<Corso> update(Corso corso, Long id) {
         Optional<Corso> foundCorso = corsoRepository.findById(id);
         if(foundCorso.isEmpty()) {
             return Optional.empty();
@@ -39,7 +40,7 @@ public class CorsoService {
         }
     }
 
-    public Optional<Corso> delete(long id) {
+    public Optional<Corso> delete(Long id) {
         Optional<Corso> foundCorso = corsoRepository.findById(id);
         if(foundCorso.isEmpty()) {
             return Optional.empty();
@@ -49,7 +50,7 @@ public class CorsoService {
         }
     }
 
-    public List<Corso> findByDurata(int durata) {
+    public List<Corso> findByDurata(String durata) {
         return corsoRepository.findByDurata(durata);
     }
 

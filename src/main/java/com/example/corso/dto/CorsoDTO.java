@@ -7,9 +7,12 @@ import lombok.Setter;
 @Setter
 public class CorsoDTO {
 
-    private int durata;
+    private String nomeCorso;
 
-    private String nome;
+    private String durata;
 
     private String nomeDocente;
+
+    private String cognomeDocente;
+
 }

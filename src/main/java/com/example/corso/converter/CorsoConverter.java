@@ -1,7 +1,10 @@
 package com.example.corso.converter;
 
+import com.example.corso.dto.DocenteDTO;
+import com.example.corso.service.DocenteService;
 import com.example.corso.dto.CorsoDTO;
 import com.example.corso.entity.Corso;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -10,15 +13,22 @@ import java.util.List;
 @Component
 public class CorsoConverter {
 
+    @Autowired
+    private DocenteService docenteService;
+
     public CorsoDTO convertToDto(Corso corso) {
         CorsoDTO corsoDTO = new CorsoDTO();
+        corsoDTO.setNomeCorso(corso.getNome());
         corsoDTO.setDurata(corso.getDurata());
+        DocenteDTO docenteDTO = new DocenteDTO();
+        corsoDTO.setNomeDocente(docenteDTO.getNome());
+        corsoDTO.setCognomeDocente(docenteDTO.getCognome());
         return corsoDTO;
     }
 
     public Corso convertToEntity(CorsoDTO corsoDTO) {
         Corso corso = new Corso();
-        corso.setDurata(corsoDTO.getDurata());
+        corso.setNome(corsoDTO.getNomeCorso());
         return corso;
     }
 
@@ -28,5 +38,10 @@ public class CorsoConverter {
             corsoDTOList.add(convertToDto(corso));
         }
         return corsoDTOList;
+    }
+
+    public Corso convertDtoToEntity(DocenteDTO docenteDTO) {
+        docenteService.getDocente(docenteDTO.getId());
+        return null;
     }
 }

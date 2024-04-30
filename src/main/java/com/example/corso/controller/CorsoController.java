@@ -2,9 +2,9 @@ package com.example.corso.controller;
 
 import com.example.corso.dto.CorsoDTO;
 import com.example.corso.entity.Corso;
-import com.example.corso.apidocente.Docente;
+import com.example.corso.dto.DocenteDTO;
 import com.example.corso.service.CorsoService;
-import com.example.corso.apidocente.DocenteService;
+import com.example.corso.service.DocenteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +21,8 @@ public class CorsoController {
     private DocenteService docenteService;
 
     @PostMapping("/salva")
-    public String create(@RequestBody Corso corso){
-        if(corso.getNome().isEmpty() || corso.getDurata()==0){
+    public String create(@RequestBody CorsoDTO corso){
+        if(corso.getNomeCorso().isEmpty() || corso.getDurata().isEmpty() || corso.getNomeDocente().isEmpty() || corso.getCognomeDocente().isEmpty()){
             return "Non si può salvare vuoto!!";
         }
         corsoService.create(corso);
@@ -35,7 +35,7 @@ public class CorsoController {
     }
 
     @PutMapping("/modifica/{id}")
-    public String update(@RequestBody Corso corso, @PathVariable int id){
+    public String update(@RequestBody Corso corso, @PathVariable Long id){
         if(corsoService.update(corso,id).isPresent()){
             return "Aggiornato!";
         }
@@ -43,7 +43,7 @@ public class CorsoController {
     }
 
     @DeleteMapping("/cancella")//cancella?id=1
-    public String delete(@RequestParam long id){
+    public String delete(@RequestParam Long id){
         if(corsoService.delete(id).isPresent()){
             return "Eliminato!";
         }
@@ -51,7 +51,7 @@ public class CorsoController {
     }
 
     @GetMapping("/findByDurata/{durata}")
-    public List<Corso> findByDurata(@PathVariable int durata){
+    public List<Corso> findByDurata(@PathVariable String durata){
         return corsoService.findByDurata(durata);
     }
 
@@ -61,7 +61,7 @@ public class CorsoController {
     }
 
     @GetMapping(value = "/findDocente/{id}",produces = "application/json")
-    public Docente findDocente(@PathVariable long id){
+    public DocenteDTO findDocente(@PathVariable Long id){
         return docenteService.getDocenteById(id);
     }
 
