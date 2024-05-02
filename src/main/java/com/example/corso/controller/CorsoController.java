@@ -2,9 +2,7 @@ package com.example.corso.controller;
 
 import com.example.corso.dto.CorsoDTO;
 import com.example.corso.entity.Corso;
-import com.example.corso.dto.DocenteDTO;
 import com.example.corso.service.CorsoService;
-import com.example.corso.service.DocenteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,9 +15,6 @@ public class CorsoController {
     @Autowired
     private CorsoService corsoService;
 
-    @Autowired
-    private DocenteService docenteService;
-
     @PostMapping("/salva")
     public String create(@RequestBody CorsoDTO corsoDto){
         if(corsoDto.getNomeCorso().isEmpty() || corsoDto.getDurata().isEmpty() || corsoDto.getNomeDocente().isEmpty() || corsoDto.getCognomeDocente().isEmpty()){
@@ -31,7 +26,7 @@ public class CorsoController {
 
     @GetMapping("/lista")
     public List<Corso> lista(){
-        return corsoService.getAllCorsi();
+        return corsoService.findCorsi();
     }
 
     @PutMapping("/modifica/{id}")
@@ -55,14 +50,9 @@ public class CorsoController {
         return corsoService.findByDurata(durata);
     }
 
-    @GetMapping("/convert")
-    public List<CorsoDTO> convert(){
-        return corsoService.convert();
-    }
-
-    @GetMapping(value = "/findDocente/{id}",produces = "application/json")
-    public DocenteDTO findDocente(@PathVariable Long id){
-        return docenteService.getDocenteById(id);
+    @GetMapping("/findCorsiAndDocenti")
+    public List<CorsoDTO> findCorsiAndDocenti(){
+        return corsoService.findCorsiAndDocenti();
     }
 
 

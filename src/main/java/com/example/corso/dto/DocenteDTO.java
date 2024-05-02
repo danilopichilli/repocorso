@@ -9,8 +9,10 @@ import lombok.Setter;
 public class DocenteDTO {
 
     private Long id;
+
     @JsonProperty("nome")
     private String nome;
     @JsonProperty("cognome")
     private String cognome;
+
 }

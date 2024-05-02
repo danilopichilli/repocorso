@@ -19,11 +19,11 @@ public class CorsoService {
     @Autowired
     private CorsoConverter corsoConverter;
 
-    public void create(CorsoDTO corso) {
-        corsoRepository.save(corsoConverter.convertDtoToEntity(corso));
+    public void create(CorsoDTO corsoDTO) {
+        corsoRepository.save(corsoConverter.convertDtoToEntity(corsoDTO));
     }
 
-    public List<Corso> getAllCorsi() {
+    public List<Corso> findCorsi() {
         return corsoRepository.findAll();
     }
 
@@ -53,7 +53,8 @@ public class CorsoService {
         return corsoRepository.findByDurata(durata);
     }
 
-    public List<CorsoDTO> convert() {
-        return corsoConverter.convertEntityToDto(getAllCorsi());
+    public List<CorsoDTO> findCorsiAndDocenti() {
+        return corsoConverter.createCorsoAndDocenteList(findCorsi());
     }
+
 }
