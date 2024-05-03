@@ -54,7 +54,11 @@ public class CorsoService {
     }
 
     public List<CorsoDTO> findCorsiAndDocenti() {
-        return corsoConverter.createCorsoAndDocenteList(findCorsi());
+        List<Corso> corsoList = corsoRepository.findAll();
+       return corsoConverter.createCorsoAndDocenteList(corsoList);
     }
 
+    public List<Corso> findByNome(String nome) {
+        return corsoRepository.findByNome(nome);
+    }
 }

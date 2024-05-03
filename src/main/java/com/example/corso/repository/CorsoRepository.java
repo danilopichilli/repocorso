@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface CorsoRepository extends JpaRepository<Corso, Long> {
     List<Corso> findByDurata(String durata);
+
+    List<Corso> findByNome(String nome);
 }
