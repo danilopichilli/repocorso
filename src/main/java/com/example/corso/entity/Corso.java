@@ -19,7 +19,7 @@ public class Corso {
 
     private String nome;
 
-    private String durata;
+    private int durata;
 
     private Long idDocente;
 

@@ -1,17 +1,15 @@
 package com.example.corso.controller;
 
-import com.example.corso.dto.CorsoDTO;
+import com.example.corso.dto.CorsoDto;
 import com.example.corso.entity.Corso;
-import com.example.corso.excelgenerator.ExcelGenerator;
+import com.example.corso.excelutility.ExcelUtility;
 import com.example.corso.service.CorsoService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -21,9 +19,12 @@ public class CorsoController {
     @Autowired
     private CorsoService corsoService;
 
+    @Autowired
+    private ExcelUtility excelUtility;
+
     @PostMapping("/salva")
-    public String create(@RequestBody CorsoDTO corsoDto){
-        if(corsoDto.getNomeCorso().isEmpty() || corsoDto.getDurata().isEmpty() || corsoDto.getNomeDocente().isEmpty() || corsoDto.getCognomeDocente().isEmpty()){
+    public String create(@RequestBody CorsoDto corsoDto){
+        if(corsoDto.getNomeCorso().isEmpty() || corsoDto.getDurata() == 0 || corsoDto.getNomeDocente().isEmpty() || corsoDto.getCognomeDocente().isEmpty()){
             return "Non si può salvare vuoto!!";
         }
         corsoService.create(corsoDto);
@@ -52,7 +53,7 @@ public class CorsoController {
     }
 
     @GetMapping("/findCorsiByDurata/{durata}")
-    public List<Corso> findByDurata(@PathVariable String durata){
+    public List<Corso> findByDurata(@PathVariable int durata){
         return corsoService.findByDurata(durata);
     }
 
@@ -62,23 +63,23 @@ public class CorsoController {
     }
 
     @GetMapping("/findCorsiAndDocenti")
-    public List<CorsoDTO> findCorsiAndDocenti(){
+    public List<CorsoDto> findCorsiAndDocenti(){
         return corsoService.findCorsiAndDocenti();
     }
 
     @GetMapping("/export-to-excel")
-    public void exportIntoExcelFile(HttpServletResponse response) throws IOException {
-        response.setContentType("application/vnd.ms-excel");
-        DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
-        String currentDateTime = dateFormatter.format(new Date());
+    public void exportCorsiListIntoExcelFile(HttpServletResponse response) throws IOException {
+        corsoService.exportCorsiListIntoExcelFile(response);
+    }
 
-        String headerKey = "Content-Disposition";
-        String headerValue  = "attachment; filename=corso" + currentDateTime + ".xlsx";
-        response.setHeader(headerKey, headerValue);
+    @PostMapping("/upload-excelfile")
+    public String importExcelFileCorsiListIntoDatabase(@RequestParam ("file") MultipartFile file) {
+        if(!file.isEmpty()){
+            corsoService.importExcelFileCorsiListIntoDatabase(file, excelUtility);
+            return "Uploaded Successfully!";
+        }
+        return "Missing file!";
 
-        List<CorsoDTO> listOfCorsiDto = corsoService.findCorsiAndDocenti();
-        ExcelGenerator generator = new ExcelGenerator(listOfCorsiDto);
-        generator.generateExcelFile(response);
     }
 
 }

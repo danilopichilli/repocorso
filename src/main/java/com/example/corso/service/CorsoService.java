@@ -1,14 +1,23 @@
 package com.example.corso.service;
 
 import com.example.corso.converter.CorsoConverter;
-import com.example.corso.dto.CorsoDTO;
+import com.example.corso.dto.CorsoDto;
 import com.example.corso.entity.Corso;
+import com.example.corso.excelgenerator.ExcelGenerator;
+import com.example.corso.excelutility.ExcelUtility;
 import com.example.corso.repository.CorsoRepository;
+import jakarta.servlet.http.HttpServletResponse;
+import org.apache.poi.ss.usermodel.Cell;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Optional;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class CorsoService {
@@ -19,7 +28,7 @@ public class CorsoService {
     @Autowired
     private CorsoConverter corsoConverter;
 
-    public void create(CorsoDTO corsoDTO) {
+    public void create(CorsoDto corsoDTO) {
         corsoRepository.save(corsoConverter.convertDtoToEntity(corsoDTO));
     }
 
@@ -49,16 +58,60 @@ public class CorsoService {
         }
     }
 
-    public List<Corso> findByDurata(String durata) {
+    public List<Corso> findByDurata(int durata) {
         return corsoRepository.findByDurata(durata);
     }
 
-    public List<CorsoDTO> findCorsiAndDocenti() {
+    public List<CorsoDto> findCorsiAndDocenti() {
         List<Corso> corsoList = corsoRepository.findAll();
        return corsoConverter.createCorsoAndDocenteList(corsoList);
     }
 
     public List<Corso> findByNome(String nome) {
         return corsoRepository.findByNome(nome);
+    }
+
+    public void exportCorsiListIntoExcelFile(HttpServletResponse response) throws IOException {
+        response.setContentType("application/vnd.ms-excel");
+        DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+        String currentDateTime = dateFormatter.format(new Date());
+
+        String filename = UUID.randomUUID().toString();
+        String headerKey = "Content-Disposition";
+        String headerValue  = "attachment; filename="+ filename + "_" +currentDateTime + ".xlsx";
+        response.setHeader(headerKey, headerValue);
+
+        List<CorsoDto> listOfCorsiDto = findCorsiAndDocenti();
+        ExcelGenerator generator = new ExcelGenerator(listOfCorsiDto);
+        generator.generateExcelFile(response);
+    }
+
+    public ResponseEntity<?> importExcelFileCorsiListIntoDatabase(MultipartFile file, ExcelUtility excelUtility){
+        String message;
+        if(excelUtility.hasExcelFormat(file)){
+            try{
+                saveFile(file, excelUtility);
+                message = "The Excel file is uploaded: " + file.getOriginalFilename();
+                return ResponseEntity.status(HttpStatus.OK).body(message);
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(e.getMessage());
+            }
+        }
+        message = "Please upload an excel file";
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+    }
+
+    public void saveFile(MultipartFile file, ExcelUtility excelUtility) {
+        try{
+            List<CorsoDto> listOfCorsiDto = excelUtility.excelToCorsiDto(file.getInputStream());
+            List<Corso> corsoList = corsoConverter.convertEntityToDto(listOfCorsiDto);
+            corsoRepository.saveAll(corsoList);
+        } catch (IOException e){
+            throw new RuntimeException("Excel data is failed to store: "+ e.getMessage());
+        }
+    }
+
+    public boolean findCorsoByNome(String nome) {
+        return corsoRepository.existsByNome(nome);
     }
 }

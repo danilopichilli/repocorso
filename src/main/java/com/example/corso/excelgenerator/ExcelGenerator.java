@@ -1,6 +1,6 @@
 package com.example.corso.excelgenerator;
 
-import com.example.corso.dto.CorsoDTO;
+import com.example.corso.dto.CorsoDto;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.poi.ss.usermodel.Cell;
@@ -15,12 +15,12 @@ import java.util.List;
 
 public class ExcelGenerator {
 
-    private List<CorsoDTO> corsoDTOList;
+    private List<CorsoDto> corsoDtoList;
     private XSSFWorkbook workbook;
     private XSSFSheet sheet;
 
-    public ExcelGenerator(List<CorsoDTO> corsoList) {
-        this.corsoDTOList = corsoList;
+    public ExcelGenerator(List<CorsoDto> corsoList) {
+        this.corsoDtoList = corsoList;
         workbook = new XSSFWorkbook();
     }
 
@@ -39,7 +39,7 @@ public class ExcelGenerator {
     }
 
     private void createCell(Row row,int columnCount,Object valueOfCell,CellStyle style){
-        sheet.autoSizeColumn(columnCount);
+       sheet.autoSizeColumn(columnCount);
         Cell cell = row.createCell(columnCount);
 
         if(valueOfCell instanceof Integer){
@@ -60,7 +60,7 @@ public class ExcelGenerator {
         XSSFFont font = workbook.createFont();
         font.setFontHeight(14);
         style.setFont(font);
-        for(CorsoDTO corsoDTO : corsoDTOList){
+        for(CorsoDto corsoDTO : corsoDtoList){
 
             Row row = sheet.createRow(rowCount++);
             int columnCount = 0;
