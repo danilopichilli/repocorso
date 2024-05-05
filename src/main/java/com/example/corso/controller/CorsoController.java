@@ -6,6 +6,8 @@ import com.example.corso.excelutility.ExcelUtility;
 import com.example.corso.service.CorsoService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,12 +25,8 @@ public class CorsoController {
     private ExcelUtility excelUtility;
 
     @PostMapping("/salva")
-    public String create(@RequestBody CorsoDto corsoDto){
-        if(corsoDto.getNomeCorso().isEmpty() || corsoDto.getDurata() == 0 || corsoDto.getNomeDocente().isEmpty() || corsoDto.getCognomeDocente().isEmpty()){
-            return "Non si può salvare vuoto!!";
-        }
-        corsoService.create(corsoDto);
-        return "Salvato!";
+    public ResponseEntity<?> create(@RequestBody CorsoDto corsoDto){
+        return corsoService.create(corsoDto);
     }
 
     @GetMapping("/lista")
@@ -73,13 +71,8 @@ public class CorsoController {
     }
 
     @PostMapping("/upload-excelfile/{sheetName}")
-    public String importExcelFileCorsiListIntoDatabase(@RequestParam ("file") MultipartFile file, @PathVariable String sheetName) {
-        if(!file.isEmpty()){
-            corsoService.importExcelFileCorsiListIntoDatabase(file, excelUtility,sheetName);
-            return "Uploaded Successfully!";
-        }
-        return "Missing file!";
-
+    public ResponseEntity<?> importExcelFileCorsiListIntoDatabase(@RequestParam ("file") MultipartFile file, @PathVariable String sheetName) {
+        return corsoService.importExcelFileCorsiListIntoDatabase(file, excelUtility,sheetName);
     }
 
 }

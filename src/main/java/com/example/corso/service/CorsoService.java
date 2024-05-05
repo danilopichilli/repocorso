@@ -28,8 +28,19 @@ public class CorsoService {
     @Autowired
     private CorsoConverter corsoConverter;
 
-    public void create(CorsoDto corsoDTO) {
-        corsoRepository.save(corsoConverter.convertDtoToEntity(corsoDTO));
+    public ResponseEntity<?> create(CorsoDto corsoDto) {
+        if(!corsoDto.getNomeCorso().isEmpty() || corsoDto.getDurata() == 0 || corsoDto.getNomeDocente().isEmpty() || corsoDto.getCognomeDocente().isEmpty()) {
+            try {
+                corsoRepository.save(corsoConverter.convertDtoToEntity(corsoDto));
+                String message = "The course has been created!";
+                /*return ResponseEntity.status(HttpStatus.CREATED).body(message);*/
+                return ResponseEntity.ok(Map.of(message, corsoDto));
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(e.getMessage());
+            }
+        }
+        String message = "The course has not been created!";
+        return ResponseEntity.badRequest().body(Map.of(message, corsoDto));
     }
 
     public List<Corso> findCorsi() {
@@ -97,7 +108,7 @@ public class CorsoService {
                 return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(e.getMessage());
             }
         }
-        message = "Please upload an excel file";
+        message = "Please upload an excel file!";
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
     }
 
