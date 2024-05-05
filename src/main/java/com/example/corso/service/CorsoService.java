@@ -29,7 +29,10 @@ public class CorsoService {
     private CorsoConverter corsoConverter;
 
     public ResponseEntity<?> create(CorsoDto corsoDto) {
-        if(!corsoDto.getNomeCorso().isEmpty() || corsoDto.getDurata() == 0 || corsoDto.getNomeDocente().isEmpty() || corsoDto.getCognomeDocente().isEmpty()) {
+
+        boolean isCourseInfoValid = corsoDto.getNomeCorso().isEmpty() || corsoDto.getDurata() == 0 || corsoDto.getNomeDocente().isEmpty() || corsoDto.getCognomeDocente().isEmpty();
+
+        if(!isCourseInfoValid) {
             try {
                 corsoRepository.save(corsoConverter.convertDtoToEntity(corsoDto));
                 String message = "The course has been created!";
@@ -40,7 +43,7 @@ public class CorsoService {
             }
         }
         String message = "The course has not been created!";
-        return ResponseEntity.badRequest().body(Map.of(message, corsoDto));
+        return ResponseEntity.badRequest().body(message);
     }
 
     public List<Corso> findCorsi() {
