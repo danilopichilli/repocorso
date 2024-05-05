@@ -33,17 +33,27 @@ public class ExcelUtility {
         return true;
     }
 
+    public Sheet getSheetName(Workbook workbook,String sheetName) {
+        List<String> sheetNames = new ArrayList<>();
+        for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+            sheetNames.add(workbook.getSheetAt(i).getSheetName());
+        }
+        /*Sheet sheet = workbook.getSheet(sheetNames.get(sheetNames.size() - 1));*/
+        for(String s : sheetNames){
+            if(s.equalsIgnoreCase(sheetName)){
+                return workbook.getSheet(s);
+            }
+        }
+        return null;
+    }
+
     //This excelToCorsiDto(InputStream inputStream) method reads the Excel Sheet data returns list of courses.
-    public List<CorsoDto> excelToCorsiDto(InputStream inputStream) {
+    public List<CorsoDto> excelToCorsiDto(InputStream inputStream,String sheetName) {
         try{
             //Creating Workbook from the InputStream
             Workbook workbook = new XSSFWorkbook(inputStream);
             //Create a Sheet from the workbook.getSheet() method
-            List<String> sheetNames = new ArrayList<>();
-            for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
-                sheetNames.add(workbook.getSheetAt(i).getSheetName());
-            }
-            Sheet sheet = workbook.getSheet(sheetNames.get(sheetNames.size() - 1));
+            Sheet sheet = getSheetName(workbook,sheetName);
             if (sheet == null) {
                 workbook.close();
                 throw new IllegalArgumentException("Sheet '" + sheet.getSheetName() + "' does not exist in the provided workbook");
@@ -61,16 +71,16 @@ public class ExcelUtility {
                 }
                 Iterator<Cell> cellsInRow = currentRow.iterator();
 
-                // Presumiamo che il nome del corso sia nella prima cella della riga
+                // We assume that the course name is in the first cell of the row
                 Cell firstCell = cellsInRow.next();
                 String nomeCorso = firstCell.getStringCellValue();
                 if(corsoService.findCorsoByNome(nomeCorso)) {
-                    continue;  // Se il corso esiste già, salta al prossimo ciclo
+                    continue;  // If the course already exists, skip to the next cycle
                 }
 
                 CorsoDto corsoDto = new CorsoDto();
                 corsoDto.setNomeCorso(nomeCorso);
-                int cellIdx = 1; // Inizia da 1 perché la cella 0 è già letta
+                int cellIdx = 1; // Start at 1 because cell 0 is already read
 
                 while (cellsInRow.hasNext()) {
                     Cell cell = cellsInRow.next();

@@ -72,7 +72,7 @@ public class CorsoService {
     }
 
     public void exportCorsiListIntoExcelFile(HttpServletResponse response) throws IOException {
-        response.setContentType("application/vnd.ms-excel");
+       response.setContentType("application/vnd.ms-excel");
         DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
         String currentDateTime = dateFormatter.format(new Date());
 
@@ -86,11 +86,11 @@ public class CorsoService {
         generator.generateExcelFile(response);
     }
 
-    public ResponseEntity<?> importExcelFileCorsiListIntoDatabase(MultipartFile file, ExcelUtility excelUtility){
+    public ResponseEntity<?> importExcelFileCorsiListIntoDatabase(MultipartFile file, ExcelUtility excelUtility,String sheetName){
         String message;
         if(excelUtility.hasExcelFormat(file)){
             try{
-                saveFile(file, excelUtility);
+                saveFile(file, excelUtility,sheetName);
                 message = "The Excel file is uploaded: " + file.getOriginalFilename();
                 return ResponseEntity.status(HttpStatus.OK).body(message);
             } catch (Exception e) {
@@ -101,9 +101,9 @@ public class CorsoService {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
     }
 
-    public void saveFile(MultipartFile file, ExcelUtility excelUtility) {
+    public void saveFile(MultipartFile file, ExcelUtility excelUtility, String sheetName) {
         try{
-            List<CorsoDto> listOfCorsiDto = excelUtility.excelToCorsiDto(file.getInputStream());
+            List<CorsoDto> listOfCorsiDto = excelUtility.excelToCorsiDto(file.getInputStream(),sheetName);
             List<Corso> corsoList = corsoConverter.convertEntityToDto(listOfCorsiDto);
             corsoRepository.saveAll(corsoList);
         } catch (IOException e){

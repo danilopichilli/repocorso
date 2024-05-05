@@ -72,10 +72,10 @@ public class CorsoController {
         corsoService.exportCorsiListIntoExcelFile(response);
     }
 
-    @PostMapping("/upload-excelfile")
-    public String importExcelFileCorsiListIntoDatabase(@RequestParam ("file") MultipartFile file) {
+    @PostMapping("/upload-excelfile/{sheetName}")
+    public String importExcelFileCorsiListIntoDatabase(@RequestParam ("file") MultipartFile file, @PathVariable String sheetName) {
         if(!file.isEmpty()){
-            corsoService.importExcelFileCorsiListIntoDatabase(file, excelUtility);
+            corsoService.importExcelFileCorsiListIntoDatabase(file, excelUtility,sheetName);
             return "Uploaded Successfully!";
         }
         return "Missing file!";
